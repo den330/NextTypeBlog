@@ -1,0 +1,25 @@
+name: Create Pull Request from Feature Branch to Dev
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - dev
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          gh pr create -B dev -H $BRANCH_NAME --title "Merge $BRANCH_NAME into dev" --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
